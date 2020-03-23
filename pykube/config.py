@@ -138,7 +138,6 @@ class KubeConfig:
             return None
         return self.filename
 
-
     @property
     def current_context(self):
         if self._current_context is None:
@@ -269,7 +268,9 @@ class BytesOrFile:
                     filename = os.path.join(os.path.dirname(kubeconfig_file), filename)
                 else:
                     raise exceptions.PyKubeError(
-                        "{} passed as relative path, but cannot determine location of kube config".format(filename)
+                        "{} passed as relative path, but cannot determine location of kube config".format(
+                            filename
+                        )
                     )
 
             if not os.path.isfile(filename):
