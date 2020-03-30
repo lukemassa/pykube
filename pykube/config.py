@@ -50,9 +50,9 @@ class KubeConfig:
                     "name": "self",
                     "cluster": {
                         "server": "https://" + _join_host_port(host, port),
-                        "certificate-authority": service_account_dir.joinpath(
-                            "ca.crt"
-                        ).absolute(),
+                        "certificate-authority": str(
+                            service_account_dir.joinpath("ca.crt")
+                        ),
                     },
                 }
             ],
@@ -312,7 +312,7 @@ class BytesOrFile:
         Returns the provided data as a file location.
         """
         if self._path:
-            return self._path.absolute()
+            return str(self._path)
         else:
             with tempfile.NamedTemporaryFile(delete=False) as f:
                 f.write(self._bytes)

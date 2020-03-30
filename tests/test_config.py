@@ -12,10 +12,9 @@ from pykube import config
 from pykube import exceptions
 
 
-GOOD_CONFIG_FILE_PATH = os.path.sep.join(["tests", "test_config.yaml"])
-DEFAULTUSER_CONFIG_FILE_PATH = os.path.sep.join(
-    ["tests", "test_config_default_user.yaml"]
-)
+BASEDIR = Path("tests")
+GOOD_CONFIG_FILE_PATH = BASEDIR.joinpath("test_config.yaml")
+DEFAULTUSER_CONFIG_FILE_PATH = BASEDIR.joinpath("test_config_default_user.yaml")
 
 
 def test_from_service_account_no_file(tmpdir):
