@@ -5,6 +5,7 @@ import base64
 import copy
 import os
 import tempfile
+import pathlib
 
 import yaml
 
@@ -32,10 +33,9 @@ class KubeConfig:
         """
         Construct KubeConfig from in-cluster service account.
         """
-        with open(os.path.join(path, "namespace")) as fp:
-            namespace = fp.read()
+        path = pathlib.Path(path)
 
-        with open(os.path.join(path, "token")) as fp:
+        with path.joinpath("token").open() as fp:
             token = fp.read()
 
         host = os.environ.get("PYKUBE_KUBERNETES_SERVICE_HOST")
@@ -50,7 +50,7 @@ class KubeConfig:
                     "name": "self",
                     "cluster": {
                         "server": "https://" + _join_host_port(host, port),
-                        "certificate-authority": os.path.join(path, "ca.crt"),
+                        "certificate-authority": path.joinpath("ca.crt").as_posix(),
                     },
                 }
             ],
@@ -79,15 +79,15 @@ class KubeConfig:
         """
         if not filename:
             filename = os.getenv("KUBECONFIG", "~/.kube/config")
-        filename = os.path.expanduser(filename)
-        if not os.path.isfile(filename):
+        filepath = pathlib.Path(filename).expanduser()
+        if not filepath.is_file():
             raise exceptions.PyKubeError(
                 "Configuration file {} not found".format(filename)
             )
-        with open(filename) as f:
+        with filepath.open() as f:
             doc = yaml.safe_load(f.read())
         self = cls(doc, **kwargs)
-        self.filename = filename
+        self.filepath = filepath
         return self
 
     @classmethod
@@ -224,7 +224,7 @@ class KubeConfig:
         if not self.kubeconfig_file:
             # Config was provided as string, not way to persit it
             return
-        with open(self.kubeconfig_file, "w") as f:
+        with self.kubeconfig_file.open("w") as f:
             yaml.safe_dump(
                 self.doc,
                 f,
