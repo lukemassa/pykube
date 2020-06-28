@@ -38,6 +38,9 @@ class KubeConfig:
         with service_account_dir.joinpath("token").open() as fp:
             token = fp.read()
 
+        with service_account_dir.joinpath("namespace").open() as fp:
+            namespace = fp.read()
+
         host = os.environ.get("PYKUBE_KUBERNETES_SERVICE_HOST")
         if host is None:
             host = os.environ["KUBERNETES_SERVICE_HOST"]
